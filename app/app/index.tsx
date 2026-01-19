@@ -43,7 +43,7 @@ export default function HomeScreen() {
       </ThemedText>
 
       {/* description */}
-      <ThemedText type="subtitle" style={styles.description}>
+      <ThemedText type="subtitle" style={styles.subtitle}>
         Your smart tea assistant. Assess leaves with images and sensory inputs
         for top quality.
       </ThemedText>
@@ -51,7 +51,7 @@ export default function HomeScreen() {
       {/* continue button */}
       <TouchableOpacity
         style={styles.button}
-        // onPress={() => router.push("/screens/next")} // change "/next" to your next screen route
+        onPress={() => router.replace("/next")}
       >
         <ThemedText type="link" style={styles.buttonText}>
           Continue
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 16,
   },
-  description: {
+  subtitle: {
     fontSize: 18,
     textAlign: "center",
     color: "#555555",
