@@ -8,16 +8,19 @@ export default function NextScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      {/* title */}
       <ThemedText type="title" style={styles.title}>
         Welcome to LeafMetric!
       </ThemedText>
+
+      {/* description */}
       <ThemedText type="subtitle" style={styles.subtitle}>
         Are you already registered with us, or a new user?
       </ThemedText>
 
-      {/* Buttons */}
+      {/* buttons */}
       <View style={styles.buttonContainer}>
-        {/* Log In button */}
+        {/* login button */}
         <TouchableOpacity
           style={[styles.button, styles.loginButton]}
           onPress={() => router.push("/login")}
@@ -27,7 +30,7 @@ export default function NextScreen() {
           </ThemedText>
         </TouchableOpacity>
 
-        {/* Register button */}
+        {/* register button */}
         <TouchableOpacity
           style={[styles.button, styles.registerButton]}
           //   onPress={() => router.push("/register")}
@@ -49,6 +52,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
+
+  // title and description
   title: {
     color: "#000000",
     fontSize: 36,
@@ -61,6 +66,8 @@ const styles = StyleSheet.create({
     color: "#555555",
     marginBottom: 30,
   },
+
+  // buttons
   buttonContainer: {
     flexDirection: "column",
     gap: 8,

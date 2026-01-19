@@ -3,27 +3,46 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import { Asset } from "expo-asset";
 import { useRouter } from "expo-router";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { userLogin } from "@/services/user/userLogin";
+import { useAuth } from "@/context/auth-context";
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
+  const { login } = useAuth();
+
+  // pre-load the show/hide icons
+  useEffect(() => {
+    Asset.loadAsync([
+      require("@/assets/icons/show.png"),
+      require("@/assets/icons/hide.png"),
+    ]);
+  }, []);
+
+  // handle user login
   const handleLogin = async () => {
     if (isDisabled) return;
 
     try {
-      const userData = await userLogin(email, password);
+      const data = await userLogin(email, password);
 
-      console.log("Login success:", userData);
+      // store user details in the session
+      await login(data.token || "", data.user);
+
+      // go to main app
+      router.replace("/(tabs)/index");
     } catch (error: any) {
       alert(error.message);
     }
@@ -35,7 +54,7 @@ export default function LoginScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <ThemedView style={styles.container}>
-        {/* Go Back button */}
+        {/* back button */}
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()} // go to previous screen
@@ -64,14 +83,31 @@ export default function LoginScreen() {
           />
 
           {/* password */}
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#888"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Password"
+              placeholderTextColor="#888"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+            />
+
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={styles.eyeButton}
+            >
+              <Image
+                source={
+                  showPassword
+                    ? require("@/assets/icons/hide.png")
+                    : require("@/assets/icons/show.png")
+                }
+                style={styles.eyeIcon}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* login button */}
@@ -104,6 +140,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#ffffff",
   },
+
+  // go back
   backButton: {
     position: "absolute",
     top: 70,
@@ -114,6 +152,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#2196F3",
   },
+
+  // title and description
   title: {
     fontSize: 36,
     fontWeight: "bold",
@@ -121,6 +161,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#555555",
   },
+
+  // input fields
   inputContainer: {
     marginBottom: 10,
   },
@@ -133,6 +175,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
   },
+
+  // login button
   loginButton: {
     backgroundColor: "#4CAF50",
     paddingVertical: 8,
@@ -147,9 +191,34 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 18,
   },
+
+  // go to register
   registerText: {
     color: "#2196F3",
     textAlign: "center",
     fontSize: 16,
+  },
+
+  // password field
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#cccccc",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 12,
+    fontSize: 16,
+  },
+  eyeButton: {
+    padding: 6,
+  },
+  eyeIcon: {
+    width: 22,
+    height: 22,
   },
 });

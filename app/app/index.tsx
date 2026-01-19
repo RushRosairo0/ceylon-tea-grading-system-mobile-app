@@ -69,11 +69,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
+
+  // image
   image: {
     width: 150,
     height: 150,
     marginBottom: 24,
   },
+
+  // title and description
   title: {
     color: "#000000",
     fontSize: 36,
@@ -86,6 +90,8 @@ const styles = StyleSheet.create({
     color: "#555555",
     marginBottom: 40,
   },
+
+  // continue button
   button: {
     backgroundColor: "#4CAF50",
     paddingVertical: 12,
