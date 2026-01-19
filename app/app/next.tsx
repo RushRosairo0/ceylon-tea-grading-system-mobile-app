@@ -20,7 +20,7 @@ export default function NextScreen() {
         {/* Log In button */}
         <TouchableOpacity
           style={[styles.button, styles.loginButton]}
-          //   onPress={() => router.push("/login")}
+          onPress={() => router.push("/login")}
         >
           <ThemedText type="link" style={styles.buttonText}>
             Log In
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   button: {
     paddingVertical: 8,
-    paddingHorizontal: 40,
+    paddingHorizontal: 50,
     borderRadius: 8,
     alignItems: "center",
   },
