@@ -138,7 +138,7 @@ export default function HomePage() {
 
           {/* analyze button */}
           <TouchableOpacity
-            style={[styles.button, styles.loginButton]}
+            style={[styles.button, styles.analyzeButton]}
             // onPress={() => router.push("/login")}
           >
             <ThemedText type="link" style={styles.buttonText}>
@@ -158,7 +158,7 @@ export default function HomePage() {
 
           {/* Rushmi */}
           <ThemedText type="subtitle" style={styles.creditName}>
-            H. R. T. Rosairo (UWU/IIT/21/003)
+            H. R. T. Rosairo (UWU/IIT/21/033)
           </ThemedText>
           <View style={styles.creditList}>
             <ThemedText type="subtitle" style={styles.creditItem}>
@@ -315,8 +315,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
   },
-  loginButton: {
-    backgroundColor: "#4CAF50",
+  analyzeButton: {
+    backgroundColor: "#2196F3",
   },
   buttonText: {
     color: "#ffffff",
