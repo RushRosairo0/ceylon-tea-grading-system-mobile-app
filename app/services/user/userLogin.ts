@@ -1,9 +1,9 @@
-import { API_URL } from "@env";
+import { config } from "@/config/config";
 
 export async function userLogin(email: string, password: string) {
   try {
     // call user login endpoint
-    const response = await fetch(`${API_URL}/api/user/login`, {
+    const response = await fetch(`${config.API_URL}/api/user/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),

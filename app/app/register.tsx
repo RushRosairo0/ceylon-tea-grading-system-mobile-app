@@ -12,16 +12,16 @@ import { useRouter } from "expo-router";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useState, useEffect } from "react";
-import { userLogin } from "@/services/user/userLogin";
-import { useAuth } from "@/context/auth-context";
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [experience, setExperience] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const { login } = useAuth();
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // pre-load the show/hide icons
   useEffect(() => {
@@ -31,25 +31,15 @@ export default function LoginScreen() {
     ]);
   }, []);
 
-  // handle user login
-  const handleLogin = async () => {
-    if (isDisabled) return;
+  // handle user register
+  const handleRegister = async () => {};
 
-    try {
-      const data = await userLogin(email, password);
-
-      // store user details in the session
-      await login(data.token || "", data.user);
-
-      // go to main app
-      // router.replace("/(tabs)/index");
-    } catch (error: any) {
-      alert(error.message);
-    }
-  };
-
-  // disable login button if email or password is empty
-  const isDisabled = email.trim() === "" || password.trim() === "";
+  // disable register button if details are empty
+  const isDisabled =
+    name.trim() === "" ||
+    email.trim() === "" ||
+    password.trim() === "" ||
+    confirmPassword.trim() === "";
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -66,20 +56,40 @@ export default function LoginScreen() {
 
         {/* title */}
         <ThemedText type="title" style={styles.title}>
-          Log In
+          Register
         </ThemedText>
 
         {/* input fields */}
         <View style={styles.inputContainer}>
+          {/* name */}
+          <TextInput
+            style={styles.input}
+            placeholder="Full Name"
+            placeholderTextColor="#888888"
+            value={name}
+            onChangeText={setName}
+            autoCapitalize="words"
+          />
+
           {/* email */}
           <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor="#888"
+            placeholderTextColor="#888888"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
+          />
+
+          {/* experience */}
+          <TextInput
+            style={styles.input}
+            placeholder="Years of Experience"
+            placeholderTextColor="#888888"
+            value={experience}
+            onChangeText={setExperience}
+            keyboardType="number-pad"
           />
 
           {/* password */}
@@ -87,7 +97,7 @@ export default function LoginScreen() {
             <TextInput
               style={styles.passwordInput}
               placeholder="Password"
-              placeholderTextColor="#888"
+              placeholderTextColor="#888888"
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -108,23 +118,53 @@ export default function LoginScreen() {
               />
             </TouchableOpacity>
           </View>
+
+          {/* confirm password */}
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Confirm Password"
+              placeholderTextColor="#888888"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry={!showConfirmPassword}
+            />
+
+            <TouchableOpacity
+              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+              style={styles.eyeButton}
+            >
+              <Image
+                source={
+                  showConfirmPassword
+                    ? require("@/assets/icons/hide.png")
+                    : require("@/assets/icons/show.png")
+                }
+                style={styles.eyeIcon}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* login button */}
         <TouchableOpacity
-          style={[styles.loginButton, isDisabled && styles.loginButtonDisabled]}
-          onPress={handleLogin}
+          style={[
+            styles.registerButton,
+            isDisabled && styles.registerButtonDisabled,
+          ]}
+          onPress={handleRegister}
           disabled={isDisabled} // disables touch
         >
-          <ThemedText type="link" style={styles.loginButtonText}>
-            Log In
+          <ThemedText type="link" style={styles.registerButtonText}>
+            Register
           </ThemedText>
         </TouchableOpacity>
 
         {/* go to register */}
-        <TouchableOpacity onPress={() => router.replace("/register")}>
+        <TouchableOpacity onPress={() => router.replace("/login")}>
           <ThemedText type="subtitle" style={styles.registerText}>
-            Don’t have an account? Register
+            Already have an account? Login
           </ThemedText>
         </TouchableOpacity>
       </ThemedView>
@@ -175,18 +215,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
 
-  // login button
-  loginButton: {
-    backgroundColor: "#4CAF50",
+  // register button
+  registerButton: {
+    backgroundColor: "#2196F3",
     paddingVertical: 8,
     borderRadius: 8,
     alignItems: "center",
     marginBottom: 20,
   },
-  loginButtonDisabled: {
-    backgroundColor: "#A5D6A7",
+  registerButtonDisabled: {
+    backgroundColor: "#90CAF9",
   },
-  loginButtonText: {
+  registerButtonText: {
     color: "#ffffff",
     fontSize: 18,
   },

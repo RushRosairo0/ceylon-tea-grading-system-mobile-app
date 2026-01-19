@@ -33,7 +33,7 @@ export default function NextScreen() {
         {/* register button */}
         <TouchableOpacity
           style={[styles.button, styles.registerButton]}
-          //   onPress={() => router.push("/register")}
+          onPress={() => router.push("/register")}
         >
           <ThemedText type="link" style={styles.buttonText}>
             Register
