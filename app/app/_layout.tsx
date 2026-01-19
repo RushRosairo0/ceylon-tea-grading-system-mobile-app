@@ -10,9 +10,12 @@ export default function Layout() {
           animation: "slide_from_right",
         }}
       >
-        <Stack.Screen name="index" />
-        <Stack.Screen name="next" />
-        <Stack.Screen name="login" />
+        <Stack.Screen name="index" options={{ gestureEnabled: false }} />
+        <Stack.Screen name="next" options={{ gestureEnabled: false }} />
+        <Stack.Screen name="login" options={{ gestureEnabled: false }} />
+        <Stack.Screen name="register" options={{ gestureEnabled: false }} />
+
+        <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
       </Stack>
     </AuthProvider>
   );

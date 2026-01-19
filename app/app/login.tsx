@@ -51,7 +51,7 @@ export default function LoginScreen() {
       await login(data.token || "", data.user);
 
       // go to main app
-      // router.replace("/(tabs)/index");
+      router.replace("/(tabs)");
     } catch (error: any) {
       alert(error.message);
     }

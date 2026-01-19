@@ -1,4 +1,5 @@
 import { StyleSheet, TouchableOpacity, Animated, Easing } from "react-native";
+import { Asset } from "expo-asset";
 import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import { ThemedText } from "@/components/themed-text";
@@ -26,6 +27,11 @@ export default function HomeScreen() {
         }),
       ]),
     ).start();
+  }, []);
+
+  // pre-load the tea bag image
+  useEffect(() => {
+    Asset.loadAsync([require("@/assets/images/tea-bag.png")]);
   }, []);
 
   return (
