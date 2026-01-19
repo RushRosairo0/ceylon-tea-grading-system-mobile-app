@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { Asset } from "expo-asset";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useState, useEffect } from "react";
@@ -17,7 +17,9 @@ import { useAuth } from "@/context/auth-context";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const { email: emailParam } = useLocalSearchParams<{ email?: string }>();
+
+  const [email, setEmail] = useState(emailParam ?? "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -30,6 +32,13 @@ export default function LoginScreen() {
       require("@/assets/icons/hide.png"),
     ]);
   }, []);
+
+  // check for user email
+  useEffect(() => {
+    if (emailParam && typeof emailParam === "string") {
+      setEmail(emailParam);
+    }
+  }, [emailParam]);
 
   // handle user login
   const handleLogin = async () => {
@@ -49,7 +58,8 @@ export default function LoginScreen() {
   };
 
   // disable login button if email or password is empty
-  const isDisabled = email.trim() === "" || password.trim() === "";
+  const isDisabled =
+    email.trim() === "" || password.trim() === "" || password.length < 6;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>

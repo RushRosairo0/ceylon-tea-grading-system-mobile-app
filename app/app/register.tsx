@@ -5,6 +5,7 @@ import {
   View,
   Image,
   Keyboard,
+  Alert,
   TouchableWithoutFeedback,
 } from "react-native";
 import { Asset } from "expo-asset";
@@ -12,6 +13,7 @@ import { useRouter } from "expo-router";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useState, useEffect } from "react";
+import { userRegister } from "@/services/user/userRegister";
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -32,14 +34,44 @@ export default function RegisterScreen() {
   }, []);
 
   // handle user register
-  const handleRegister = async () => {};
+  const handleRegister = async () => {
+    if (isDisabled) return;
+
+    try {
+      const data = await userRegister(name, email, experience, password);
+
+      if (data && data.user) {
+        // alert user
+        Alert.alert(
+          "Registration Successful",
+          "Your account has been created successfully. Please log in.",
+          [
+            {
+              text: "OK",
+              onPress: () =>
+                // send user to login
+                router.replace({
+                  pathname: "/login",
+                  params: { email },
+                }),
+            },
+          ],
+          { cancelable: false },
+        );
+      }
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
 
   // disable register button if details are empty
   const isDisabled =
     name.trim() === "" ||
     email.trim() === "" ||
     password.trim() === "" ||
-    confirmPassword.trim() === "";
+    confirmPassword.trim() === "" ||
+    password.length < 6 ||
+    password !== confirmPassword;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
