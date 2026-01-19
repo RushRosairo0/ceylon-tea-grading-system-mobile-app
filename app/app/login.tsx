@@ -10,16 +10,23 @@ import { useRouter } from "expo-router";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useState } from "react";
+import { userLogin } from "@/services/user/userLogin";
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // TODO: add login logic
-    console.log("Logging in with", email, password);
-    // router.replace("/(tabs)/home") // navigate to main app on success
+  const handleLogin = async () => {
+    if (isDisabled) return;
+
+    try {
+      const userData = await userLogin(email, password);
+
+      console.log("Login success:", userData);
+    } catch (error: any) {
+      alert(error.message);
+    }
   };
 
   // disable login button if email or password is empty
