@@ -139,7 +139,7 @@ export default function HomePage() {
           {/* analyze button */}
           <TouchableOpacity
             style={[styles.button, styles.analyzeButton]}
-            onPress={() => router.push("/predict")}
+            onPress={() => router.push("/camera")}
           >
             <ThemedText type="link" style={styles.buttonText}>
               Analyze Now

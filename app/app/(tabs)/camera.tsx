@@ -125,7 +125,7 @@ export default function CameraPage() {
 
         {/* guide */}
         <ThemedText style={styles.text}>
-          Capture or upload a clear image of tea leaves
+          Capture or upload a clear picture of tea leaves
         </ThemedText>
       </View>
     </View>

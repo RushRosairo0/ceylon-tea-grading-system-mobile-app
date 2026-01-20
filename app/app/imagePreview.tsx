@@ -12,7 +12,7 @@ import { useAuth } from "@/context/auth-context";
 import { imageUpload } from "@/services/image/imageUpload";
 import { useState } from "react";
 
-export default function ImagePreviewPage() {
+export default function ImagePreviewScreen() {
   const { token } = useAuth();
   const router = useRouter();
 
@@ -41,7 +41,7 @@ export default function ImagePreviewPage() {
     try {
       const result = await imageUpload(token, decodeURIComponent(uri));
 
-      console.log(result);
+      router.replace("/sensoryInput");
     } catch (error: any) {
       setError(error.message || "Failed to upload image");
     } finally {
@@ -125,7 +125,7 @@ export default function ImagePreviewPage() {
 
         {/* guide */}
         <ThemedText style={styles.text}>
-          Retake or upload the captured image to continue
+          Retake or upload the captured picture to continue
         </ThemedText>
       </View>
 
@@ -142,7 +142,9 @@ const styles = StyleSheet.create({
   },
 
   // space bar
-  topSpacer: { flex: 1 },
+  topSpacer: {
+    flex: 1,
+  },
   bottomSpacer: {
     height: 86,
   },

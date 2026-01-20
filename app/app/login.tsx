@@ -99,7 +99,7 @@ export default function LoginScreen() {
           <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor="#888"
+            placeholderTextColor="#374151"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -111,7 +111,7 @@ export default function LoginScreen() {
             <TextInput
               style={styles.passwordInput}
               placeholder="Password"
-              placeholderTextColor="#888"
+              placeholderTextColor="#374151"
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 40,
     textAlign: "center",
-    color: "#555555",
+    color: "#000000",
   },
 
   // input fields
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#cccccc",
+    borderColor: "#374151",
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#cccccc",
+    borderColor: "#374151",
     borderRadius: 8,
     paddingHorizontal: 12,
     marginBottom: 16,

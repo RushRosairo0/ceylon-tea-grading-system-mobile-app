@@ -97,7 +97,7 @@ export default function RegisterScreen() {
           <TextInput
             style={styles.input}
             placeholder="Full Name"
-            placeholderTextColor="#888888"
+            placeholderTextColor="#374151"
             value={name}
             onChangeText={setName}
             autoCapitalize="words"
@@ -107,7 +107,7 @@ export default function RegisterScreen() {
           <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor="#888888"
+            placeholderTextColor="#374151"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -118,7 +118,7 @@ export default function RegisterScreen() {
           <TextInput
             style={styles.input}
             placeholder="Years of Experience"
-            placeholderTextColor="#888888"
+            placeholderTextColor="#374151"
             value={experience}
             onChangeText={setExperience}
             keyboardType="number-pad"
@@ -129,7 +129,7 @@ export default function RegisterScreen() {
             <TextInput
               style={styles.passwordInput}
               placeholder="Password"
-              placeholderTextColor="#888888"
+              placeholderTextColor="#374151"
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -156,7 +156,7 @@ export default function RegisterScreen() {
             <TextInput
               style={styles.passwordInput}
               placeholder="Confirm Password"
-              placeholderTextColor="#888888"
+              placeholderTextColor="#374151"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry={!showConfirmPassword}
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 40,
     textAlign: "center",
-    color: "#555555",
+    color: "#000000",
   },
 
   // input fields
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#cccccc",
+    borderColor: "#374151",
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#cccccc",
+    borderColor: "#374151",
     borderRadius: 8,
     paddingHorizontal: 12,
     marginBottom: 16,
