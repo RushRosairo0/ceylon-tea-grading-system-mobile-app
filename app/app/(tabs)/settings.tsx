@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Asset } from "expo-asset";
 import { useFocusEffect, useRouter } from "expo-router";
 import { ThemedText } from "@/components/themed-text";
@@ -52,8 +58,8 @@ export default function SettingsPage() {
           const data = await userGet(token);
 
           setUser(data.user);
-        } catch (err: any) {
-          setError(err.message || "Failed to load user");
+        } catch (error: any) {
+          setError(error.message || "Failed to load user");
         } finally {
           setLoading(false);
         }
@@ -80,18 +86,19 @@ export default function SettingsPage() {
   // loading
   if (authLoading || loading) {
     return (
-      <ThemedView style={styles.container}>
-        <ThemedText style={styles.subtitle}>Loading.....</ThemedText>
-      </ThemedView>
+      <View style={styles.centeredContainer}>
+        <ActivityIndicator size="large" color="#4CAF50" />
+        <ThemedText style={styles.loadingText}>Uploading image...</ThemedText>
+      </View>
     );
   }
 
   // on error
   if (error && error !== "Authentication failed!") {
     return (
-      <ThemedView style={styles.container}>
-        <ThemedText style={styles.subtitle}>Error: {error}</ThemedText>
-      </ThemedView>
+      <View style={styles.centeredContainer}>
+        <ThemedText style={styles.errorText}>Error: {error}</ThemedText>
+      </View>
     );
   }
 
@@ -282,5 +289,27 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "600",
     fontSize: 16,
+  },
+
+  // loading
+  centeredContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 18,
+    color: "#555555",
+  },
+
+  // on error
+  errorText: {
+    fontSize: 18,
+    color: "#FF3B30",
+    textAlign: "center",
+    marginBottom: 20,
   },
 });

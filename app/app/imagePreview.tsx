@@ -1,20 +1,88 @@
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedText } from "@/components/themed-text";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { useAuth } from "@/context/auth-context";
+import { imageUpload } from "@/services/image/imageUpload";
+import { useState } from "react";
 
 export default function ImagePreviewPage() {
+  const { token } = useAuth();
   const router = useRouter();
+
   const { uri } = useLocalSearchParams<{ uri: string }>();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // go to camera
   const retakeImage = async () => {
     router.back();
   };
 
+  // upload image
+  const uploadCapturedImage = async () => {
+    // check for access token
+    if (!token) {
+      setError("No access token found");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await imageUpload(token, decodeURIComponent(uri));
+
+      console.log(result);
+    } catch (error: any) {
+      setError(error.message || "Failed to upload image");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // retry
+  const tryAgain = async () => {
+    router.replace("/(tabs)/camera");
+  };
+
   // if no photo found
   if (!uri) {
-    return <ThemedText>No image to preview</ThemedText>;
+    return (
+      <View style={styles.centeredContainer}>
+        <ThemedText>No image to preview</ThemedText>
+      </View>
+    );
+  }
+
+  // loading
+  if (loading) {
+    return (
+      <View style={styles.centeredContainer}>
+        <ActivityIndicator size="large" color="#4CAF50" />
+        <ThemedText style={styles.loadingText}>Uploading image...</ThemedText>
+      </View>
+    );
+  }
+
+  // on error
+  if (error) {
+    return (
+      <View style={styles.centeredContainer}>
+        <ThemedText style={styles.errorText}>Error: {error}</ThemedText>
+        <TouchableOpacity style={styles.retryButton} onPress={tryAgain}>
+          <ThemedText style={styles.retryText}>Try Again</ThemedText>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   return (
@@ -42,7 +110,7 @@ export default function ImagePreviewPage() {
             {/* next */}
             <TouchableOpacity
               style={styles.sideButton}
-              onPress={() => router.back()}
+              onPress={uploadCapturedImage}
             >
               <IconSymbol name="arrow.right" size={22} color="#fff" />
             </TouchableOpacity>
@@ -132,5 +200,39 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     color: "#555555",
+  },
+
+  // loading
+  centeredContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 18,
+    color: "#555555",
+  },
+
+  // on error
+  errorText: {
+    fontSize: 18,
+    color: "#FF3B30",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  retryText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
