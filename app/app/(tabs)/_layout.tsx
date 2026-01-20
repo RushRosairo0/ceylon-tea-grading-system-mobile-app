@@ -38,21 +38,21 @@ export default function TabLayout() {
       />
 
       {/* Predict */}
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="predict"
         options={{
-          title: "Predict",
+          title: "Analyze",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="sparkles" color={color} />
+            <IconSymbol size={28} name="camera.fill" color={color} />
           ),
         }}
-      /> */}
+      />
 
       {/* user history */}
       <Tabs.Screen
         name="history"
         options={{
-          title: "User History",
+          title: "Feedback History",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="clock.fill" color={color} />
           ),

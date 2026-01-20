@@ -21,6 +21,18 @@ export default function SettingsPage() {
     Asset.loadAsync([require("@/assets/icons/edit.png")]);
   }, []);
 
+  // check if access token is expired
+  useEffect(() => {
+    if (error === "Authentication failed!") {
+      router.replace({
+        pathname: "/login",
+        params: {
+          message: "Please login again!",
+        },
+      });
+    }
+  }, [error, router]);
+
   // fetch user details when page loads
   useFocusEffect(
     useCallback(() => {
@@ -57,24 +69,31 @@ export default function SettingsPage() {
     logout();
 
     // go to login
-    router.replace("/login");
+    router.replace({
+      pathname: "/login",
+      params: {
+        message: "You have logged out successfully!",
+      },
+    });
   };
 
   // loading
-  if (authLoading || loading)
+  if (authLoading || loading) {
     return (
       <ThemedView style={styles.container}>
         <ThemedText style={styles.subtitle}>Loading.....</ThemedText>
       </ThemedView>
     );
+  }
 
   // on error
-  if (error)
+  if (error && error !== "Authentication failed!") {
     return (
       <ThemedView style={styles.container}>
         <ThemedText style={styles.subtitle}>Error: {error}</ThemedText>
       </ThemedView>
     );
+  }
 
   // if user not found
   if (!user)

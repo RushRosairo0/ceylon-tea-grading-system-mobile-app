@@ -6,6 +6,7 @@ import {
   Image,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import { Asset } from "expo-asset";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -17,7 +18,10 @@ import { useAuth } from "@/context/auth-context";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { email: emailParam } = useLocalSearchParams<{ email?: string }>();
+  const { email: emailParam, message } = useLocalSearchParams<{
+    email?: string;
+    message?: string;
+  }>();
 
   const [email, setEmail] = useState(emailParam ?? "");
   const [password, setPassword] = useState("");
@@ -39,6 +43,16 @@ export default function LoginScreen() {
       setEmail(emailParam);
     }
   }, [emailParam]);
+
+  // check for messages
+  useEffect(() => {
+    if (message) {
+      Alert.alert(message, undefined, [{ text: "OK" }]);
+
+      // remove the message by re-rendering
+      router.replace("/login");
+    }
+  }, [message, router]);
 
   // handle user login
   const handleLogin = async () => {
@@ -203,7 +217,7 @@ const styles = StyleSheet.create({
 
   // go to register
   registerText: {
-    color: "#2196F3",
+    color: "#4CAF50",
     textAlign: "center",
     fontSize: 16,
   },
