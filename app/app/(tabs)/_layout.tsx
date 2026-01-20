@@ -37,9 +37,9 @@ export default function TabLayout() {
         }}
       />
 
-      {/* Predict */}
+      {/* camera */}
       <Tabs.Screen
-        name="predict"
+        name="camera"
         options={{
           title: "Analyze",
           tabBarIcon: ({ color }) => (

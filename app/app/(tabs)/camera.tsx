@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 import {
   CameraView,
   CameraType,
@@ -11,7 +12,9 @@ import * as ImagePicker from "expo-image-picker";
 import { ThemedText } from "@/components/themed-text";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 
-export default function PredictPage() {
+export default function CameraPage() {
+  const router = useRouter();
+
   const cameraRef = useRef<CameraView>(null);
   const [permission, requestPermission] = useCameraPermissions();
   const [facing] = useState<CameraType>("back");
@@ -24,16 +27,6 @@ export default function PredictPage() {
     }
   }, [permission]);
 
-  // loading
-  if (!permission) {
-    return <ThemedText>Loading camera...</ThemedText>;
-  }
-
-  // if not allowed
-  if (!permission.granted) {
-    return <ThemedText>Camera access is required</ThemedText>;
-  }
-
   // capture image
   const captureImage = async () => {
     if (!cameraRef.current) return;
@@ -42,7 +35,7 @@ export default function PredictPage() {
       quality: 0.8,
     });
 
-    console.log("Captured image:", photo.uri);
+    goToPreview(photo.uri);
   };
 
   // upload image
@@ -53,18 +46,39 @@ export default function PredictPage() {
     });
 
     if (!result.canceled) {
-      console.log("Selected image:", result.assets[0].uri);
+      await goToPreview(result.assets[0].uri);
     }
   };
 
+  // go to next screen
+  const goToPreview = async (uri: string) => {
+    router.push({
+      pathname: "../imagePreview",
+      params: {
+        uri: encodeURIComponent(uri),
+      },
+    });
+  };
+
+  // loading
+  if (!permission) {
+    return <ThemedText>Loading camera...</ThemedText>;
+  }
+
+  // if not allowed
+  if (!permission.granted) {
+    return <ThemedText>Camera access is required</ThemedText>;
+  }
+
   return (
     <View style={styles.container}>
-      {/* gap */}
+      {/* gap - top */}
       <View style={styles.topSpacer} />
 
       {/* camera section */}
       <View style={styles.cameraSection}>
         <View style={styles.cameraFrame}>
+          {/* camera */}
           <CameraView
             ref={cameraRef}
             style={StyleSheet.absoluteFill}
