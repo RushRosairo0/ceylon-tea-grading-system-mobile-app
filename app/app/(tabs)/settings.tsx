@@ -39,7 +39,7 @@ export default function SettingsPage() {
     }
   }, [error, router]);
 
-  // fetch user details when page loads
+  // fetch user details when screen loads
   useFocusEffect(
     useCallback(() => {
       const fetchUser = async () => {

@@ -39,9 +39,14 @@ export default function ImagePreviewScreen() {
     setError(null);
 
     try {
-      const result = await imageUpload(token, decodeURIComponent(uri));
+      const data = await imageUpload(token, decodeURIComponent(uri));
 
-      router.replace("/sensoryInput");
+      router.replace({
+        pathname: "/sensoryInput",
+        params: {
+          imageId: data.image.id,
+        },
+      });
     } catch (error: any) {
       setError(error.message || "Failed to upload image");
     } finally {

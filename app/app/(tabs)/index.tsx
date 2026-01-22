@@ -146,85 +146,6 @@ export default function HomePage() {
             </ThemedText>
           </TouchableOpacity>
         </View>
-
-        {/* hr */}
-        <View style={styles.hr} />
-
-        {/* credits */}
-        <View style={styles.section}>
-          <ThemedText type="title" style={styles.sectionTitle}>
-            Credits
-          </ThemedText>
-
-          {/* Rushmi */}
-          <ThemedText type="subtitle" style={styles.creditName}>
-            H. R. T. Rosairo (UWU/IIT/21/033)
-          </ThemedText>
-          <View style={styles.creditList}>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - Backend API development
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - AI model integration
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - Database design and management
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - Server-side logic and validation
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - API documentation
-            </ThemedText>
-          </View>
-
-          {/* Akeesha */}
-          <ThemedText type="subtitle" style={styles.creditName}>
-            W. G. A. M. Widanage (UWU/IIT/21/101)
-          </ThemedText>
-          <View style={styles.creditList}>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - Mobile app development
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - UI/UX design and improvements
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - App navigation and routing
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - Frontend state management
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - Integrating APIs with mobile app
-            </ThemedText>
-          </View>
-
-          {/* Nimesha */}
-          <ThemedText type="subtitle" style={styles.creditName}>
-            G. A. N. Kumari (UWU/IIT/21/077)
-          </ThemedText>
-          <View style={styles.creditList}>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - Data preprocessing for AI training
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - Training AI prediction models
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - Creating AI prediction pipeline
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - Model evaluation and testing
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.creditItem}>
-              - Performance optimization of AI model
-            </ThemedText>
-          </View>
-        </View>
-
-        {/* hr */}
-        <View style={styles.hr} />
       </ScrollView>
     </ThemedView>
   );
@@ -321,25 +242,5 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#ffffff",
     fontSize: 18,
-  },
-
-  // credit
-  creditName: {
-    color: "#000000",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 12,
-    marginBottom: 4,
-    textAlign: "left",
-  },
-  creditList: {
-    paddingLeft: 16,
-    marginBottom: 12,
-  },
-  creditItem: {
-    fontSize: 16,
-    marginBottom: 2,
-    color: "#555555",
-    fontWeight: "semibold",
   },
 });

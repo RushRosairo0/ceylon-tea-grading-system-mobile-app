@@ -5,20 +5,31 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 import { ThemedText } from "@/components/themed-text";
 import { ScaleInput } from "@/components/scale-input";
+import { useAuth } from "@/context/auth-context";
+import { analyze } from "@/services/analyze/analyze";
 
-export default function SensoryInputPage() {
+export default function SensoryInputScreen() {
   const router = useRouter();
+  const { token } = useAuth();
+  const { imageId: imageIdParam } = useLocalSearchParams<{
+    imageId?: string;
+  }>();
 
   const [aroma, setAroma] = useState<number | null>(null);
   const [color, setColor] = useState<number | null>(null);
   const [taste, setTaste] = useState<number | null>(null);
   const [afterTaste, setAfterTaste] = useState<number | null>(null);
   const [acceptability, setAcceptability] = useState<number | null>(null);
+
+  const [loading, setLoading] = useState(false);
+  const [forceLoading, setForceLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // reset input fields
   const resetSensoryInputs = () => {
@@ -29,7 +40,7 @@ export default function SensoryInputPage() {
     setAcceptability(null);
   };
 
-  const submitSensoryInput = () => {
+  const submitSensoryInput = async () => {
     if (
       aroma === null ||
       color === null ||
@@ -41,8 +52,44 @@ export default function SensoryInputPage() {
       return;
     }
 
-    // TODO: call api
-    console.log({ aroma, color, taste, afterTaste, acceptability });
+    // check for access token
+    if (!token) {
+      setError("No access token found");
+      setLoading(false);
+      setForceLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setForceLoading(true);
+    setError(null);
+
+    // force loade for 4 seconds
+    setTimeout(() => setForceLoading(false), 3000);
+
+    try {
+      const data = await analyze(
+        token!,
+        Number(imageIdParam),
+        aroma!,
+        color!,
+        taste!,
+        afterTaste!,
+        acceptability!,
+      );
+
+      // go to result screen
+      router.replace({
+        pathname: "/result",
+        params: {
+          data: JSON.stringify(data.data),
+        },
+      });
+    } catch (error: any) {
+      setError(error.message || "Failed to analyze data");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // disable analyze button if inputs are empty
@@ -60,6 +107,35 @@ export default function SensoryInputPage() {
     taste === null &&
     afterTaste === null &&
     acceptability === null;
+
+  // retry
+  const tryAgain = async () => {
+    router.replace("/(tabs)/camera");
+  };
+
+  // loading
+  if (loading || forceLoading) {
+    return (
+      <View style={styles.centeredContainer}>
+        <ActivityIndicator size="large" color="#4CAF50" />
+        <ThemedText style={styles.loadingText}>
+          Evaluating your tea sample...
+        </ThemedText>
+      </View>
+    );
+  }
+
+  // on error
+  if (error) {
+    return (
+      <View style={styles.centeredContainer}>
+        <ThemedText style={styles.errorText}>Error: {error}</ThemedText>
+        <TouchableOpacity style={styles.retryButton} onPress={tryAgain}>
+          <ThemedText style={styles.retryText}>Try Again</ThemedText>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -228,6 +304,7 @@ const styles = StyleSheet.create({
     right: 16,
     flexDirection: "row",
     justifyContent: "space-between",
+    gap: 12,
   },
   button: {
     flex: 1,
@@ -240,7 +317,6 @@ const styles = StyleSheet.create({
   // reset
   resetButton: {
     backgroundColor: "#FF3B30",
-    marginLeft: 12,
   },
   resetButtonDisabled: {
     backgroundColor: "#F2A6A3",
@@ -254,13 +330,46 @@ const styles = StyleSheet.create({
   // analyze
   analyzeButton: {
     backgroundColor: "#4CAF50",
-    marginLeft: 12,
   },
   analyzeButtonDisabled: {
     backgroundColor: "#A5D6A7",
   },
   analyzeText: {
     color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  // loading
+  centeredContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 18,
+    color: "#555555",
+  },
+
+  // on error
+  errorText: {
+    fontSize: 18,
+    color: "#FF3B30",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  retryText: {
+    color: "#fff",
     fontSize: 16,
     fontWeight: "600",
   },
