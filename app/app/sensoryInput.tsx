@@ -48,7 +48,6 @@ export default function SensoryInputScreen() {
       afterTaste === null ||
       acceptability === null
     ) {
-      //   setError("Please rate all attributes (1–7)");
       return;
     }
 
@@ -65,7 +64,7 @@ export default function SensoryInputScreen() {
     setError(null);
 
     // force loade for 4 seconds
-    setTimeout(() => setForceLoading(false), 3000);
+    setTimeout(() => setForceLoading(false), 4000);
 
     try {
       const data = await analyze(

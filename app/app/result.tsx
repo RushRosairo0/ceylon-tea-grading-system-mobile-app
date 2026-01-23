@@ -1,5 +1,5 @@
 import { ThemedText } from "@/components/themed-text";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   Keyboard,
   StyleSheet,
@@ -8,17 +8,94 @@ import {
   TouchableWithoutFeedback,
   View,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { config } from "@/config/config";
+import { useState } from "react";
+import { useAuth } from "@/context/auth-context";
+import { analyzeSave } from "@/services/analyze/analyzeSave";
 
 const { width } = Dimensions.get("window");
-const IMAGE_HEIGHT = width * 0.75;
 
 export default function ResultScreen() {
+  const router = useRouter();
+  const { token } = useAuth();
+
   const { data: dataParam } = useLocalSearchParams<{ data?: string }>();
   const result = dataParam ? JSON.parse(dataParam) : null;
 
-  console.log(result);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // save prediction results
+  const savePredictionResult = async () => {
+    if (!result) {
+      return;
+    }
+
+    // check for access token
+    if (!token) {
+      setError("No access token found");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const saveData = await analyzeSave(
+        token,
+        Number(result.imageId),
+        result.grade,
+        Number(result.gradeConfidence),
+        Number(result.category),
+        Number(result.categoryConfidence),
+        result.model,
+      );
+
+      // go to home screen
+      router.replace({
+        pathname: "/(tabs)",
+        params: {
+          message: "Analysis results saved successfully!",
+        },
+      });
+    } catch (error: any) {
+      setError(error.message || "Failed to save analyze data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // retry
+  const tryAgain = async () => {
+    router.replace("/(tabs)/camera");
+  };
+
+  // loading
+  if (loading) {
+    return (
+      <View style={styles.centeredContainer}>
+        <ActivityIndicator size="large" color="#4CAF50" />
+        <ThemedText style={styles.loadingText}>
+          Saving analyzed data...
+        </ThemedText>
+      </View>
+    );
+  }
+
+  // on error
+  if (error) {
+    return (
+      <View style={styles.centeredContainer}>
+        <ThemedText style={styles.errorText}>Error: {error}</ThemedText>
+        <TouchableOpacity style={styles.retryButton} onPress={tryAgain}>
+          <ThemedText style={styles.retryText}>Try Again</ThemedText>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -47,12 +124,17 @@ export default function ResultScreen() {
                   </ThemedText>
                 </ThemedText>
 
-                {/* quality */}
+                {/* category */}
                 <ThemedText style={styles.resultText}>
-                  Quality: {result.quality}{" "}
+                  Category: {result.category}{" "}
                   <ThemedText style={styles.confidenceText}>
-                    ({(result.qualityConfidence * 100).toFixed(1)}%)
+                    ({(result.categoryConfidence * 100).toFixed(1)}%)
                   </ThemedText>
+                </ThemedText>
+
+                {/* model version */}
+                <ThemedText style={styles.modelText}>
+                  Model version: {result.model}
                 </ThemedText>
               </View>
             )}
@@ -69,10 +151,10 @@ export default function ResultScreen() {
                 </ThemedText>
               </TouchableOpacity>
 
-              {/* ok */}
+              {/* confirm */}
               <TouchableOpacity
                 style={[styles.button, styles.okButton]}
-                // onPress={submitSensoryInput}
+                onPress={savePredictionResult}
               >
                 <ThemedText style={styles.okText}>Confirm</ThemedText>
               </TouchableOpacity>
@@ -143,15 +225,21 @@ const styles = StyleSheet.create({
   },
   resultText: {
     fontSize: 30,
+    fontWeight: "bold",
     lineHeight: 31,
-    fontWeight: "600",
     color: "#333333",
     marginBottom: 3,
   },
   confidenceText: {
     fontSize: 20,
-    fontWeight: "500",
+    fontWeight: "bold",
     color: "#4CAF50",
+  },
+  modelText: {
+    marginTop: 10,
+    fontSize: 20,
+    fontWeight: "500",
+    color: "#000000",
   },
 
   // action buttons
@@ -182,7 +270,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  // ok
+  // confirm
   okButton: {
     backgroundColor: "#4CAF50",
   },
@@ -210,5 +298,39 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     color: "#555555",
+  },
+
+  // loading
+  centeredContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 18,
+    color: "#555555",
+  },
+
+  // on error
+  errorText: {
+    fontSize: 18,
+    color: "#FF3B30",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  retryText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

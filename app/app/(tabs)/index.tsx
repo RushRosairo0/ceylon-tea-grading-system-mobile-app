@@ -5,16 +5,31 @@ import {
   TouchableOpacity,
   Animated,
   Easing,
+  Alert,
 } from "react-native";
 import { Asset } from "expo-asset";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 
 export default function HomePage() {
   const router = useRouter();
+  const { message } = useLocalSearchParams<{
+    message?: string;
+  }>();
+
   const bounceAnim = useRef(new Animated.Value(0)).current;
+
+  // check for messages
+  useEffect(() => {
+    if (message) {
+      Alert.alert(message, undefined, [{ text: "OK" }]);
+
+      // remove the message by re-rendering
+      router.replace("/(tabs)");
+    }
+  }, [message, router]);
 
   useEffect(() => {
     // infinite up-down animation
