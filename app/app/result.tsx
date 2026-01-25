@@ -59,7 +59,7 @@ export default function ResultScreen() {
       );
 
       if (isSave) {
-        // go to home screen
+        // go to home screen on cancel
         router.replace({
           pathname: "/(tabs)",
           params: {
@@ -67,7 +67,7 @@ export default function ResultScreen() {
           },
         });
       } else {
-        // parse data to be passed
+        // parse data to be passed to feedback screen
         const data = {
           predictionId: saveData.data.id,
           grade: saveData.data.predictedGrade,

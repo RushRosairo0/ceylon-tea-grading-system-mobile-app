@@ -1,5 +1,6 @@
 import { ThemedText } from "@/components/themed-text";
 import { useAuth } from "@/context/auth-context";
+import { saveFeedback } from "@/services/feedback/saveFeedback";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -28,7 +29,7 @@ export default function FeedbackScreen() {
   }>();
   const feedbackData = dataParam ? JSON.parse(dataParam) : null;
 
-  const [agree, setAgree] = useState<boolean | null>(true);
+  const [agree, setAgree] = useState<boolean>(true);
   const [grade, setGrade] = useState<string>(feedbackData?.grade || GRADES[0]);
   const [comment, setComment] = useState<string>("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -49,8 +50,49 @@ export default function FeedbackScreen() {
   };
 
   // save feedback
-  const saveFeedback = async () => {
-    console.log("feedback saved.....");
+  const handleSaveFeedback = async () => {
+    if (!feedbackData) {
+      return;
+    }
+
+    // check for access token
+    if (!token) {
+      setError("No access token found");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    console.log(feedbackData);
+
+    try {
+      const feedbackResult: any = await saveFeedback(
+        token,
+        feedbackData.predictionId,
+        agree,
+        grade,
+        comment,
+        feedbackData.aroma,
+        feedbackData.color,
+        feedbackData.taste,
+        feedbackData.afterTaste,
+        feedbackData.acceptability,
+      );
+
+      // go to home page
+      router.replace({
+        pathname: "/(tabs)",
+        params: {
+          message: "Feedback have been saved successfully!",
+        },
+      });
+    } catch (error: any) {
+      setError(error.message || "Failed to save feedback");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // retry
@@ -223,7 +265,7 @@ export default function FeedbackScreen() {
               {/* confirm */}
               <TouchableOpacity
                 style={[styles.button, styles.saveButton]}
-                onPress={saveFeedback}
+                onPress={handleSaveFeedback}
               >
                 <ThemedText style={styles.saveText}>Save Feedback</ThemedText>
               </TouchableOpacity>
