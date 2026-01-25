@@ -65,8 +65,6 @@ export default function FeedbackScreen() {
     setLoading(true);
     setError(null);
 
-    console.log(feedbackData);
-
     try {
       const feedbackResult: any = await saveFeedback(
         token,
@@ -105,9 +103,7 @@ export default function FeedbackScreen() {
     return (
       <View style={styles.centeredContainer}>
         <ActivityIndicator size="large" color="#4CAF50" />
-        <ThemedText style={styles.loadingText}>
-          Saving analyzed data...
-        </ThemedText>
+        <ThemedText style={styles.loadingText}>Saving feedback...</ThemedText>
       </View>
     );
   }
