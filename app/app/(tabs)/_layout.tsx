@@ -49,7 +49,7 @@ export default function TabLayout() {
       />
 
       {/* user history */}
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="history"
         options={{
           title: "Feedback History",
@@ -57,7 +57,7 @@ export default function TabLayout() {
             <IconSymbol size={28} name="clock.fill" color={color} />
           ),
         }}
-      />
+      /> */}
 
       {/* settings */}
       <Tabs.Screen

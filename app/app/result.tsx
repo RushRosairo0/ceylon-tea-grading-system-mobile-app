@@ -21,14 +21,18 @@ export default function ResultScreen() {
   const router = useRouter();
   const { token } = useAuth();
 
-  const { data: dataParam } = useLocalSearchParams<{ data?: string }>();
+  const { data: dataParam, sensory: sensoryParam } = useLocalSearchParams<{
+    data?: string;
+    sensory?: string;
+  }>();
   const result = dataParam ? JSON.parse(dataParam) : null;
+  const sensory = sensoryParam ? JSON.parse(sensoryParam) : null;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // save prediction results
-  const savePredictionResult = async () => {
+  const savePredictionResult = async (isSave = true) => {
     if (!result) {
       return;
     }
@@ -44,7 +48,7 @@ export default function ResultScreen() {
     setError(null);
 
     try {
-      const saveData = await analyzeSave(
+      const saveData: any = await analyzeSave(
         token,
         Number(result.imageId),
         result.grade,
@@ -54,13 +58,36 @@ export default function ResultScreen() {
         result.model,
       );
 
-      // go to home screen
-      router.replace({
-        pathname: "/(tabs)",
-        params: {
-          message: "Analysis results saved successfully!",
-        },
-      });
+      if (isSave) {
+        // go to home screen
+        router.replace({
+          pathname: "/(tabs)",
+          params: {
+            message: "Analysis results have been saved successfully!",
+          },
+        });
+      } else {
+        // parse data to be passed
+        const data = {
+          predictionId: saveData.data.id,
+          grade: saveData.data.predictedGrade,
+          category: saveData.data.predictedCategory,
+          aroma: sensory.aroma,
+          color: sensory.color,
+          taste: sensory.taste,
+          afterTaste: sensory.afterTaste,
+          acceptability: sensory.acceptability,
+        };
+
+        // go to feedback page
+        router.replace({
+          pathname: "/feedback",
+          params: {
+            data: JSON.stringify(data),
+            message: "Analysis results have been saved successfully!",
+          },
+        });
+      }
     } catch (error: any) {
       setError(error.message || "Failed to save analyze data");
     } finally {
@@ -144,7 +171,7 @@ export default function ResultScreen() {
               {/* feedback */}
               <TouchableOpacity
                 style={[styles.button, styles.feedbackButton]}
-                // onPress={resetSensoryInputs}
+                onPress={() => savePredictionResult(false)}
               >
                 <ThemedText style={styles.feedbackText}>
                   Provide Feedback
@@ -154,7 +181,7 @@ export default function ResultScreen() {
               {/* confirm */}
               <TouchableOpacity
                 style={[styles.button, styles.okButton]}
-                onPress={savePredictionResult}
+                onPress={() => savePredictionResult()}
               >
                 <ThemedText style={styles.okText}>Confirm</ThemedText>
               </TouchableOpacity>
@@ -174,7 +201,7 @@ export default function ResultScreen() {
           </ThemedText>
         </View>
 
-        {/* bottom gap */}
+        {/* gap - bottom */}
         <View style={styles.bottomSpacer} />
       </View>
     </TouchableWithoutFeedback>

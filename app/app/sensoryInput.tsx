@@ -82,6 +82,13 @@ export default function SensoryInputScreen() {
         pathname: "/result",
         params: {
           data: JSON.stringify(data.data),
+          sensory: JSON.stringify({
+            aroma,
+            color,
+            taste,
+            afterTaste,
+            acceptability,
+          }),
         },
       });
     } catch (error: any) {

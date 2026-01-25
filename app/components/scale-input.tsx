@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     color: "#374151",
   },
   activeNumber: {
-    color: "#fff",
+    color: "#ffffff",
     fontWeight: "bold",
   },
 });
